@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useEffect } from 'react';
 import { auth } from './service/firebase'
 import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth' ;
+import { gitProvider } from './service/firebase';
 function App() {
   const [user, setUser] = useState(null);
   
@@ -16,7 +18,13 @@ function App() {
   return (
     <div className="App">
       
-      {user===null ? <button className="button" onClick={signInWithGoogle}><i className="fab fa-google"></i>Sign in with google</button> :
+      {user===null 
+      ? 
+      <div>
+        <button className="button" onClick={signInWithGoogle}><i className="fab fa-google"></i>Sign in with google</button>
+        <button className="button" onClick={() => {auth.signInWithPopup(gitProvider)}}><i className="fab fa-google"></i>Sign in with github</button>
+      </div> 
+      :
         <div>
           {console.log(user)}
           <div>
