@@ -1,68 +1,92 @@
-import { signInWithGoogle } from './service/firebase'
-import { useState } from 'react'
-import { useEffect } from 'react';
-import { auth } from './service/firebase'
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth' ;
-import 'firebase/compat/firestore'
-import { gitProvider } from './service/firebase';
-function App() {
-  const [user, setUser] = useState(null);
-  
+import React from 'react'
+import { useState } from 'react';
+import { data } from './data';
+import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { BsTelephoneOutbound, BsReplyFill, BsReplyAllFill } from "react-icons/bs";
+import Dialog from '@mui/material/Dialog';
+import Input from './Input';
+import Message from './Message';
+import moment from "moment-jalaali";
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      setUser(user)
-    })
-  }, [])
-  const googleSignInHandler = () => {
-    signInWithGoogle().then(result => {
-      console.log(result.user.displayName)
-      const users = firebase.firestore().collection('users')
-      console.log(users)
-      users.doc(result.user.uid).get().then( (doc) => {
-        if (!doc.exists){
-          users.add({
-            users: result.user.displayName
-          })
-        }
-      })
-    })
+// import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import image from './image.png'
+import './App.css'
+function App() {
+  const [mydatas, setMydatas] = useState(data.data)
+  const [openInput, setOpenInput] = useState(false)
+  const [openMessage, setOpenMessage] = useState(false)
+  const handleClickOpen = () => {
+    setOpenInput(true);
+  };
+  const handleClose = () => {
+    setOpenInput(false);
+  };
+  const handleClickMessageOpen = () => {
+    setOpenMessage(true);
+  };
+  const handleMessageClose = () => {
+    setOpenMessage(false);
+  };
+  const convertDate = (date) => {
+    const d = new Date(date)
+    new Intl.DateTimeFormat('fa-IR', {dateStyle: 'full', timeStyle: 'long'}).format(d)
+  }
+  const handleStar = (id) => {
+      const data = mydatas.find(mydata=> mydata.uniqueid === id)
+      console.log(data)
+      data.isImportant = !data.isImportant
+      setMydatas([...mydatas])
   }
   return (
-    <div className="App" style={{display:"flex", alignItems:'center', justifyContent: 'center', flex: 1}}>
-      
-      {user===null 
-      ? 
-      <div style={{display:'flex', justifyContent: 'space-around', flexDirection:'column'}}>
-        <div>
-          <button className="button" onClick={googleSignInHandler}><i className="fab fa-google"></i>Sign in with google</button>
+    <div className='main-container'>
+      <Dialog open={openInput} onClose={handleClose}>
+        <Input />
+      </Dialog>
+      {mydatas.map((mydata)=>
+        <div className='message-container' key={mydata.uniqueid}>
+           <Dialog open={openMessage} onClose={handleMessageClose} fullWidth>
+              <Message messageData={mydata} close={handleMessageClose}/>
+           </Dialog>
+          <div className='right-container'>
+            <div className='icon-container'>
+              {/* <Popup trigger={<button>hello</button>} position="right-center">
+                <div>my pop up screen</div>
+              </Popup> */}
+              <BsTelephoneOutbound color='red' className='icon'/>
+                {mydata.isImportant 
+                  ? <AiFillStar color='#FFDB58' className='icon' onClick={() => handleStar(mydata.uniqueid)}/>
+                  :  <AiOutlineStar className='icon' onClick={() => handleStar(mydata.uniqueid)}/>
+                }
+                <BsReplyAllFill className='icon' onClick={handleClickOpen}/>
+                <BsReplyFill className='icon' onClick={handleClickOpen}/>
+            </div>
+            <div className='time-container'>
+              {new Intl.DateTimeFormat('fa-IR', {dateStyle: 'full', timeStyle: 'long'}).format(new Date(mydata.createdate))}
+            </div>
+          </div>
+          <div className='left-container'  onClick={handleClickMessageOpen}>
+            <div className='image-container'>
+              <img className="avatar" src={image} width={'85px'}></img>
+            </div>
+            <div className='message-info-container'>
+              <div>
+                <div className='contact-info-container'>
+                  {mydata.contactinfo}
+                  <div className='label-container'>
+                    <div className='label' style={{backgroundColor:`${mydata.lablecolor1}` }}/>
+                    <div className='label' style={{backgroundColor:`${mydata.lablecolor2}` }}/>
+                    <div className='label' style={{backgroundColor:`${mydata.lablecolor3}` }}/>
+                  </div>
+                </div>
+              </div>
+              <div className='subject-container'>
+                {mydata.subject}
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <button className="button" onClick={() => {auth.signInWithPopup(gitProvider)}}><i className="fab fa-google"></i>Sign in with github</button>
-        </div>  
-      </div> 
-      :
-        <div>
-          {console.log(user)}
-          <div>
-            <h1>
-              hello {user._delegate.displayName}
-            </h1>
-          </div>
-          <div>
-            <h2>
-              email  {user._delegate.email}
-            </h2>
-          </div>
-          <div>
-            <img src={user._delegate.photoURL}></img>
-          </div>
-          <div>
-            <button className="button signout" onClick={() => auth.signOut()}>Sign out</button>
-          </div>
-        </div>
-      }
+      )}
     </div>
   );
 }

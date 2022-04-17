@@ -1,0 +1,76 @@
+.main-container{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.message-container{
+    display: flex;
+    flex: 1;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid gray;
+    padding-bottom: 20px;
+    margin: 15px;
+    cursor: pointer;
+}
+.right-container{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    margin-left: 15px
+}
+.left-container{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    flex: 1;
+    margin-right: 15px;
+}
+.time-container{
+    opacity: 60%;
+    margin-left: 10px;
+    font-size: 13px;
+}
+.icon-container{
+    display: flex;
+    justify-content: space-evenly;
+    opacity: 70%;
+}
+.icon{
+    cursor: pointer;
+    margin-right: 20px;
+}
+.message-info-container{
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+.contact-info-container{
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bold;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+}
+.subject-container{
+    font-size: 12px;
+    margin-top: 10px;
+}
+.avatar{
+    border-radius: 100px
+}
+.label{
+    width: 10px;
+    height: 10px;
+    border-radius: 100px;
+}
+.label-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.label{
+    margin-left: 5px;
+}
