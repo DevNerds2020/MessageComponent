@@ -39,7 +39,7 @@ function App() {
       setMydatas([...mydatas])
   }
   return (
-    <div className='main-container'>
+    <div className='main-container' id="container">
       <Dialog open={openInput} onClose={handleClose}>
         <Input />
       </Dialog>
